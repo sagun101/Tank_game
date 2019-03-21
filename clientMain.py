@@ -179,12 +179,12 @@ def main(conn):
                 for i in ally.keys():
                     if player.bullet.box.colliderect(ally[i].box) == True:
                         player.bullet.destroy = True
-                    if ally[i].bullet.box.colliderect(player.box) == True and ally[i].bullet.box != None:
+                    if ally[i].bullet.box != None and ally[i].bullet.box.colliderect(player.box) == True:
                         player.hp -= ally[i].bullet.dmg
                 for i in enemy.keys():
                     if player.bullet.box.colliderect(enemy[i].box) ==True:
                         player.bullet.destroy = True
-                    if enemy[i].bullet.box.colliderect(player.box) == True and enemy[i].bullet !=None:
+                    if enemy[i].bullet != None and enemy[i].bullet.box.colliderect(player.box) == True:
                         player.hp -= enemy[i].bullet.dmg
                         
                 if player.bullet.destroy == True:

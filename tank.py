@@ -8,7 +8,7 @@ class Bullet:
         self.angle = a
         self.vel = pygame.math.Vector2()
         self.vel.from_polar((power,self.angle))
-        self.dmg = 25
+        self.dmg = 100
         self.destroy = False
         self.player = None
         self.box = None
