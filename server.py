@@ -84,7 +84,7 @@ class clockThread(threading.Thread):
         clockCount()
 
 def clockCount():
-    global clockTime
+    global clockTime, playerReady
     global STATE, READY
     counting = clockTime
     while counting > 0:
@@ -113,33 +113,51 @@ def clockCount():
     STATE = 4
     clockTime = ""
     time.sleep(5)
+    
+    allNone = 1
+    while True:
+        
+        for i in playerName.keys():
+            if i in team1:
+                if team1[i].bullet != None:
+                    allNone *= 0
+            else:
+                if team2[i].bullet != None:
+                    allNone *= 0
+        if allNone == 1:
+            break
+        else:
+            allNone = 1
         
     x = 1
     for T in team1.keys():
         x *= playerDead[T]
-        team1[T].fire = False
-        team1[T].bullet = None
+        playerReady[T] = 0
     y = 1
     for T in team2.keys():
         y *= playerDead[T]
-        team2[T].fire = False
-        team2[T].bullet = None
+        playerReady[T] = 0
         
     if x == 1 and y == 1:
         STATE = 5
         clockTime = "DRAW!"
+        time.sleep(1.5)
     elif x == 1 and y != 1:
         STATE = 5
         clockTime = "Team 2 Wins!"
+        time.sleep(1.5)
     elif x != 1 and y == 1:
         STATE = 5
         clockTime = "Team 1 Wins!"
+        time.sleep(1.5)
     elif x != 1 and y != 1:
         STATE = 6
         clockTime = "Next Round!"
+        time.sleep(1.5)
         STATE = 1
         clockTime = 5
         clockCount()
+    
     
     
 def setUpThread():
@@ -200,6 +218,7 @@ def connectingThread(conn, player):
     time.sleep(.5)
     while not exitGame:
         #print("sending set")
+        #print(clockTime, STATE)
         if player in team1:
             conn.send(pickle.dumps((team1, team2, player, clockTime, STATE, playerName[player])))
         else:
