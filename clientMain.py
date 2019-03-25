@@ -165,6 +165,7 @@ def main(conn):
                if temp != None:
                    temp.draw(window)
             #collision detection
+<<<<<<< HEAD
             if bullet != None:
                 if bullet.outScreen(screen):
                     print("out screen")
@@ -193,6 +194,31 @@ def main(conn):
             font(window,time,WIDTH/2,HEIGHT/2,80)
             fire = False
                     
+=======
+            if player.bullet != None:
+                if player.bullet.box.colliderect(screen) == False:
+                    player.bullet.destroy = True
+                if player.bullet.box.colliderect(brick_collider) == True:
+                    player.bullet.destroy = True
+                if player.bullet.box.colliderect(ground.get_rect(x =0, y = int(HEIGHT -110))) == True:
+                    player.bullet.destroy = True
+                for i in ally.keys():
+                    if player.bullet.box.colliderect(ally[i].box) == True:
+                        player.bullet.destroy = True
+                    if ally[i].bullet.box != None and ally[i].bullet.box.colliderect(player.box) == True:
+                        player.hp -= ally[i].bullet.dmg
+                for i in enemy.keys():
+                    if player.bullet.box.colliderect(enemy[i].box) ==True:
+                        player.bullet.destroy = True
+                    if enemy[i].bullet !=None and enemy[i].bullet.box.colliderect(player.box) == True:
+                        player.hp -= enemy[i].bullet.dmg
+                        
+                if player.bullet.destroy == True:
+                    player.bullet = None
+            if player.hp <= 0:
+                player.destroy = True
+            
+>>>>>>> add163c2e1ff9d27f6fca3467a7aaf1dad93e052
         if state == 2 and fire == False:
             window.blit(fireButton[0],(int(WIDTH/2 - 72),int(HEIGHT -65)))
         elif state == 2 and fire == True:
@@ -211,6 +237,7 @@ def main(conn):
         TRACK = 1
         #print("clientSend", player.destroy)
         conn.send(pickle.dumps(getVal()))
+        print("here")
         pg.display.update()
            
     

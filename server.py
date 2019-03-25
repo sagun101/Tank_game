@@ -114,9 +114,28 @@ def clockCount():
     time.sleep(1)
     STATE = 4
     clockTime = ""
+<<<<<<< HEAD
     time.sleep(10)
     for i in Bullet.keys():
         Bullet[i] = None
+=======
+    time.sleep(5)
+    
+    allNone = 1
+    while True:
+        
+        for i in playerName.keys():
+            if i in team1:
+                if team1[i].bullet != None:
+                    allNone *= 0
+            else:
+                if team2[i].bullet != None:
+                    allNone *= 0
+        if allNone == 1:
+            break
+        else:
+            allNone = 1
+>>>>>>> add163c2e1ff9d27f6fca3467a7aaf1dad93e052
         
     x = 1
     for T in team1.keys():
@@ -147,6 +166,7 @@ def clockCount():
         clockTime = 5
         clockCount()
     sys.exit()
+    
     
     
     
@@ -211,8 +231,11 @@ def connectingThread(conn, player):
     while not exitGame:
         #print("sending set")
         #print(clockTime, STATE)
+<<<<<<< HEAD
         #print(Bullet)
         
+=======
+>>>>>>> add163c2e1ff9d27f6fca3467a7aaf1dad93e052
         if player in team1:
             #print("serverOUt", team1[player].destroy)
             conn.send(pickle.dumps((team1, team2, player, clockTime, STATE, Bullet)))
