@@ -6,6 +6,7 @@ import time
 import pickle
 import clientMain
 import setting
+import sys
 
 exit = 0
 gameExit = 0
@@ -182,6 +183,7 @@ def startingGame():
     THREADS.append(setIt)
     setIt.start()
     
+    
     #start the pygame and add in the players in lobby
 
 def host(hostName, player, count, serverIp):
@@ -225,14 +227,10 @@ def lobbyThreader(conn, player, count, serverIP):
     time.sleep(.5)
     #print(conn)
     clientMain.main(conn)
-    print("gameover")    
+    print("gameover")
+    sys.exit()
+        
             
-def killThreads():
-    global THREADS
-    for i in THREADS:
-        print("thread death")
-        THREADS[i].join()
-    program.destroy()
     
 if __name__ == "__main__":
     program = TankGame()

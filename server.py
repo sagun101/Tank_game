@@ -12,6 +12,7 @@ import pickle
 import utilites
 import setting
 import tank
+import sys
 
 address = {}
 SERVERIP = None
@@ -32,6 +33,7 @@ playerCons = {}
 playerName = {}
 playerReady = {}
 playerDead = {}
+Bullet = {}
 
 team1 = {}
 team2 = {}
@@ -112,22 +114,9 @@ def clockCount():
     time.sleep(1)
     STATE = 4
     clockTime = ""
-    time.sleep(5)
-    
-    allNone = 1
-    while True:
-        
-        for i in playerName.keys():
-            if i in team1:
-                if team1[i].bullet != None:
-                    allNone *= 0
-            else:
-                if team2[i].bullet != None:
-                    allNone *= 0
-        if allNone == 1:
-            break
-        else:
-            allNone = 1
+    time.sleep(10)
+    for i in Bullet.keys():
+        Bullet[i] = None
         
     x = 1
     for T in team1.keys():
@@ -157,14 +146,17 @@ def clockCount():
         STATE = 1
         clockTime = 5
         clockCount()
+    sys.exit()
     
     
     
 def setUpThread():
     global CLOCK
-    global playerReady
+    global playerReady, Bullet
     global waitFlag
     global team1, team2
+    for F in playerName.keys():
+        Bullet[F] = None
     for F in playerName.keys():
         playerDead[F] = 0
     for F in playerName.keys():
@@ -218,37 +210,47 @@ def connectingThread(conn, player):
     time.sleep(.5)
     while not exitGame:
         #print("sending set")
-        print(clockTime, STATE)
-        if player in team1:
-            conn.send(pickle.dumps((team1, team2, player, clockTime, STATE, playerName[player])))
-        else:
-            conn.send(pickle.dumps((team2, team1, player, clockTime, STATE, playerName[player])))
+        #print(clockTime, STATE)
+        #print(Bullet)
         
-        dataRecv = conn.recv(2048)
+        if player in team1:
+            #print("serverOUt", team1[player].destroy)
+            conn.send(pickle.dumps((team1, team2, player, clockTime, STATE, Bullet)))
+        else:
+            #print("serverOUt", team2[player].destroy)
+            conn.send(pickle.dumps((team2, team1, player, clockTime, STATE, Bullet)))
+        
+        dataRecv = conn.recv(4096)
         try:
             dataRecv = pickle.loads(dataRecv)
         except:
             print(dataRecv)
         
-        if not dataRecv.destroy:
-            if dataRecv.fire:
+        tankOb = dataRecv[0]
+        bullet = dataRecv[1]
+        
+        print("serverIN", tankOb.destroy)
+        if not tankOb.destroy:
+            #print(("shouldn't be here when dead", player))
+            Bullet[player] = bullet
+            
+            if tankOb.fire:
                 playerReady[player] = 1
-                if player in team1:
-                    team1[player] = dataRecv.shoot()
-                    dataRecv.fire = False
-                else:                                
-                    team2[player] = dataRecv.shoot()
-                    dataRecv.fire = False
+                Bullet[player] = tankOb.shoot()
+                tankOb.fire = False
             if player in team1:
-                team1[player] = dataRecv
+                team1[player] = tankOb
             else:                                #stores it
-                team2[player] = dataRecv
+                team2[player] = tankOb
         else:
+            #print(("dead", player))
             playerReady[player] = True
             if player in team1:
                 playerDead[player] = 1
+                team1[player] = tankOb
             else:                                
                 playerDead[player] = 1
+                team2[player] = tankOb
             
     #send to next thread fun
 
