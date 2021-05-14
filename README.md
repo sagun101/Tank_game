@@ -1,2 +1,2 @@
 # Tank_game
-class project for CSCI 420
+Pygame Project inspired by Scorched Earth: Tank game.
